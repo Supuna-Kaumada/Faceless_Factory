@@ -1,0 +1,32 @@
+services:
+  n8n:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: faceless_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    env_file:
+      - .env
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE:-Asia/Colombo}
+      - NODES_EXCLUDE=[]
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+      - TTS_VOICE=${TTS_VOICE:-en-US-ChristopherNeural}
+      - TTS_RATE=${TTS_RATE:-+3%}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./tmp_media:/tmp/faceless_pipeline
+
+volumes:
+  n8n_data:
